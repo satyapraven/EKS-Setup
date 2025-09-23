@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # EKS Cluster Staged Deployment Script (Linux/WSL/Mac)
-# Automatically installs missing prerequisites
+# Automatically installs missing prerequisites.
+# This script automates the two-stage deployment process.
 
 set -e
 
