@@ -31,7 +31,7 @@ variable "availability_zones" {
 variable "node_group_name" {
   description = "EKS Node Group name"
   type        = string
-  default     = "eks-ai-ng-public1"
+  default     = "var.cluster_name-ng-public1"
 }
 
 variable "node_instance_type" {
@@ -74,7 +74,7 @@ variable "common_tags" {
   description = "Common tags for all resources"
   type        = map(string)
   default = {
-    Project     = "EKS-AI"
+    Project     = "var.cluster_name"
     Environment = "dev"
     ManagedBy   = "terraform"
   }
@@ -84,4 +84,28 @@ variable "create_node_group" {
   description = "Whether to create the node group (set to false for initial cluster creation)"
   type        = bool
   default     = false
+}
+
+variable "enable_ssh_access" {
+  description = "Enable SSH remote access to node group"
+  type        = bool
+  default     = true
+}
+
+variable "ami_type" {
+  description = "AMI type for node group"
+  type        = string
+  default     = "AL2_ARM_64"
+}
+
+variable "capacity_type" {
+  description = "Capacity type for node group (ON_DEMAND or SPOT)"
+  type        = string
+  default     = "ON_DEMAND"
+}
+
+variable "node_subnet_ids" {
+  description = "Subnets for node group"
+  type        = list(string)
+  default     = [] # Will default to public subnets if empty
 }

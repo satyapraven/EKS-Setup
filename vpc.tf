@@ -28,8 +28,8 @@ resource "aws_subnet" "public_subnets" {
   map_public_ip_on_launch = true
 
   tags = merge(var.common_tags, {
-    Name                        = "${var.cluster_name}-public-subnet-${count.index + 1}"
-    "kubernetes.io/role/elb"    = "1"
+    Name                                        = "${var.cluster_name}-public-subnet-${count.index + 1}"
+    "kubernetes.io/role/elb"                    = "1"
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   })
 }
@@ -43,8 +43,8 @@ resource "aws_subnet" "private_subnets" {
   availability_zone = var.availability_zones[count.index]
 
   tags = merge(var.common_tags, {
-    Name                                = "${var.cluster_name}-private-subnet-${count.index + 1}"
-    "kubernetes.io/role/internal-elb"   = "1"
+    Name                                        = "${var.cluster_name}-private-subnet-${count.index + 1}"
+    "kubernetes.io/role/internal-elb"           = "1"
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   })
 }
@@ -53,7 +53,7 @@ resource "aws_subnet" "private_subnets" {
 resource "aws_eip" "nat_eips" {
   count = length(var.availability_zones)
 
-  domain = "vpc"
+  domain     = "vpc"
   depends_on = [aws_internet_gateway.eks_igw]
 
   tags = merge(var.common_tags, {

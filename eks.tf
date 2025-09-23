@@ -127,11 +127,11 @@ resource "aws_eks_node_group" "eks_node_group" {
   node_group_name = var.node_group_name
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
 
-  subnet_ids = aws_subnet.public_subnets[*].id
+  subnet_ids = length(var.node_subnet_ids) > 0 ? var.node_subnet_ids : aws_subnet.public_subnets[*].id
 
-  capacity_type  = "ON_DEMAND"
+  capacity_type  = var.capacity_type
   instance_types = [var.node_instance_type]
-  ami_type       = "AL2_ARM_64"
+  ami_type       = var.ami_type
 
   scaling_config {
     desired_size = var.node_desired_capacity
@@ -139,15 +139,18 @@ resource "aws_eks_node_group" "eks_node_group" {
     min_size     = var.node_min_capacity
   }
 
-  update_config {
-    max_unavailable = 1
-  }
-
   disk_size = var.node_volume_size
 
-  remote_access {
-    ec2_ssh_key               = data.aws_key_pair.kube_ai_keypair.key_name
-    source_security_group_ids = [aws_security_group.eks_node_group_sg.id]
+  dynamic "remote_access" {
+    for_each = var.enable_ssh_access ? [1] : []
+    content {
+      ec2_ssh_key               = data.aws_key_pair.kube_ai_keypair.key_name
+      source_security_group_ids = [aws_security_group.eks_node_group_sg.id]
+    }
+  }
+
+  update_config {
+    max_unavailable = 1
   }
 
   depends_on = [
