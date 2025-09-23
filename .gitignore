@@ -2,6 +2,8 @@
 *.tfstate
 *.tfstate.*
 *.tfvars
+!stage1-cluster-only.tfvars
+!stage2-with-nodegroup.tfvars
 !*.tfvars.example
 .terraform/
 .terraform.lock.hcl
